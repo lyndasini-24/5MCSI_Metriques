@@ -14,8 +14,11 @@ def hello_world():
 @app.route("/contact/")#cotact
 def MaPremiereAPI():
     return "<h2>Ma page de contact</h2>
-   app.run(debug=True)
 
-  
+
+
+
 if __name__ == "__main__":
+app.run(debug=True)
+  
  
