@@ -1,1 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Metrique</title>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+  <div id="chart_div"></div>
+  <script>
+    google.charts.load('current', {packages: ['corechart']});
+    google.charts.setOnLoadCallback(drawBackgroundColor);
+
+    function drawBackgroundColor() {
+      function drawChart(data) {
+        var dataTable = new google.visualization.DataTable();
+        dataTable.addColumn('string', 'Date');
+        dataTable.addColumn('number', 'Température');
+        data.results.forEach(entry => {
+          var date = new Date(entry.Jour * 1000);
+          dataTable.addRow([date.toLocaleDateString(), entry.temp]);
+        });
+
+        var options = {
+          title: 'Histogramme des températures de Paris pour les 16 prochains jours',
+          legend: { position: 'none' },
+          chartArea: { width: '50%' },
+          hAxis: {
+            title: 'Température',
+            minValue: 0
+          },
+          vAxis: {
+            title: 'Date'
+          }
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(dataTable, options);
+      }
+
+      fetch('/paris/')
+        .then(response => response.json())
+        .then(data => {
+          drawChart(data);
+        });
+    }
+  </script>
+</body>
+</html>
 
