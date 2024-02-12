@@ -2,53 +2,32 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Commits Timeline</title>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script>
-        google.charts.load('current', {'packages':['corechart']});
-
-        function drawChart(dataArray) {
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Date de Commit');
-            data.addColumn('number', 'Nombre de Commits');
-
-            dataArray.forEach(function (row) {
-                data.addRow(row);
-            });
-
-            var options = {
-                title: 'Commits par Timestamp',
-                hAxis: { title: 'Timestamp', slantedText: true, slantedTextAngle: 45 },
-                vAxis: { title: 'Nombre de Commits' },
-                legend: 'none'
-            };
-
-            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-            chart.draw(data, options);
-        }
-
-        async function loadCommitData() {
-            const response = await fetch('https://api.github.com/repos/OpenRSI/5MCSI_Metriques/commits');
-            const commits = await response.json();
-            const dataArray = [];
-
-            commits.forEach(commit => {
-                
-                const fullDate = commit.commit.author.date;
-              
-                const date = new Date(fullDate);
-                const dateString = date.toISOString();
-                
-                dataArray.push([dateString, 1]);
-            });
-
-            drawChart(dataArray);
-        }
-
-        google.charts.setOnLoadCallback(loadCommitData);
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction des Minutes</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <div id="chart_div" style="width: 100%; height: 500px;"></div>
+    <h2>Extraction des Minutes</h2>
+    <div id="minutesContainer"></div>
+
+    <script>
+        // Fonction pour extraire les minutes à partir de la route
+        function extractMinutesFromRoute(dateString) {
+            $.ajax({
+                url: '/extract-minutes/' + dateString,
+                type: 'GET',
+                success: function(response) {
+                    // Afficher les minutes extraites sur la page
+                    $('#minutesContainer').html('Minutes extraites : ' + response.minutes);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Erreur lors de la récupération des minutes : ' + error);
+                }
+            });
+        }
+
+        // Appel de la fonction pour extraire les minutes
+        extractMinutesFromRoute('2024-02-11T11:57:27Z'); // Vous pouvez passer une date différente ici
+    </script>
 </body>
 </html>
